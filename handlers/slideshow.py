@@ -16,6 +16,9 @@ PHOTO_LIST = [[photo[2], photo[3]] for photo in data_media.sql_get_all_photo()]
 # Возможные значения циклов, которые можно выбрать
 CYCLE_OPTIONS = [3, 4, 5, 7, 10, 33]
 
+# Переменная по умолчанию для количества фото в цикле
+CYCLE_DEFAULT = 4
+
 
 def get_keyboard(paused=False):
     """Создаёт клавиатуру управления с кнопками переключения, выбора цикла и закрытия."""
@@ -53,9 +56,9 @@ async def start_slideshow(message: Message, state: FSMContext):
     # Отправляем первое фото
     msg = await message.answer_photo(photo=photo_id, reply_markup=get_keyboard())
     await message.delete()
-    # Сохраняем индекс, состояние автоплея, счётчик цикла и выбранное количество фото в цикле (по умолчанию 4)
+    # Сохраняем индекс, состояние автоплея, счётчик цикла и выбранное количество фото в цикле (по умолчанию CYCLE_DEFAULT)
     await state.set_state(SlideShowState.viewing)
-    await state.update_data(index=index, msg_id=msg.message_id, playing=True, cycle_count=0, cycle_length=33)
+    await state.update_data(index=index, msg_id=msg.message_id, playing=True, cycle_count=0, cycle_length=CYCLE_DEFAULT)
 
     # Запускаем автоплей с небольшой задержкой
     await asyncio.sleep(3)
@@ -143,7 +146,7 @@ async def autoplay_slideshow(chat_id: int, state: FSMContext):
         current_index = data["index"]
         msg_id = data["msg_id"]
         cycle_count = data.get("cycle_count", 0)
-        cycle_length = data.get("cycle_length", 33)  # значение по умолчанию 33
+        cycle_length = data.get("cycle_length", CYCLE_DEFAULT)  # Используем переменную CYCLE_DEFAULT
         next_index = (current_index + 1) % len(PHOTO_LIST)
 
         # Если достигли конца текущего цикла
