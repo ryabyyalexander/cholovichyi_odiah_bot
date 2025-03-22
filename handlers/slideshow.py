@@ -17,7 +17,7 @@ PHOTO_LIST = [[photo[2], photo[3]] for photo in data_media.sql_get_all_photo()]
 CYCLE_OPTIONS = [3, 4, 5, 7, 10, 33]
 
 # Переменная по умолчанию для количества фото в цикле
-CYCLE_DEFAULT = 7
+CYCLE_DEFAULT = 50
 
 
 def get_keyboard(paused=False):
