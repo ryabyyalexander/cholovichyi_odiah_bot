@@ -55,7 +55,7 @@ async def cat(callback: CallbackQuery, state: FSMContext):
     cap = 'знайшлась' if len(new_list_size) == 1 else 'знайшлось'
     await state.update_data(new_list_size=new_list_size)
     await to_stage(new_list_size, callback, state,
-                   more_info=True, filters=False, kb_size=kb_size,
+                   more_info=True, filters=True, kb_size=kb_size,
                    new_captions=f"""
 У розмірі  <b>{callback.data}</b>
 {cap}:  <b>{len(new_list_size)}</b>  мод.

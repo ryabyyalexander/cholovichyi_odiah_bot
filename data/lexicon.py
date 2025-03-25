@@ -62,6 +62,7 @@ RED = ('➖', '©️', '🔝', '✔️', '®️', '➕')
     'sim': '▢',
     'qw': '📚'
 '''
+lennon = 'AgACAgIAAxkBAAJgu2fiRyVRTEho1ReKLIolu23jAQmhAAJ56DEbRp4RS-uGISPoeaiDAQADAgADeAADNgQ'
 man = 'AgACAgIAAxkBAAJaCmfSeWU1ePwcQhN_3uuqjjmYKuYzAAJn7DEbRiSRSm1rU4G2E94fAQADAgADeAADNgQ'
 city25club = 'AgACAgIAAxkBAAId9WailtiaeNBhWnRfZm-rpQjgY8IfAAIy3jEb-rgYSb-gOT1rz7rsAQADAgADeAADNQQ'
 men = 'AgACAgIAAxkBAAIl92at3Oq5E1weolkgUpoh22Fl6ZBMAAIO5TEbW7lwSegu9eZMW3fQAQADAgADeQADNQQ'

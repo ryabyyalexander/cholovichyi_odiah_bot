@@ -5,7 +5,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, InputMediaPhoto
 from data import btn, del_msg, bot
 from data.functions import to_stage, start_info, data_time, get_usd_exchange_rate
-from data.lexicon import man
+from data.lexicon import lennon
 from keyboards.ikb import simple_ikb
 from sql import data_media, data_product
 from states.states import State_album, State_add_photo
@@ -48,7 +48,7 @@ async def process_sl(callback: CallbackQuery, state: FSMContext):
         # video = data_media.sql_get_video(2, 'video')
         try:
             await bot.edit_message_media(
-                media=InputMediaPhoto(media=man, caption=caption),
+                media=InputMediaPhoto(media=lennon, caption=caption),
                 chat_id=callback.message.chat.id,
                 message_id=callback.message.message_id,
                 reply_markup=simple_ikb(2,
@@ -68,7 +68,7 @@ async def process_sl(callback: CallbackQuery, state: FSMContext):
     photos = [photo for photo in photos if data_product.photo_is_product(photo[0])]
 
     # выполняем функцию "НА СЦЕНУ"
-    await to_stage(photos, callback, state, shaffle=True, more_info=True)
+    await to_stage(photos, callback, state, shaffle=True, more_info=True, filters=True)
 
     if callback.data == '➔      новинки':
         await callback.message.delete()

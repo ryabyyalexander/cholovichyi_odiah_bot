@@ -136,7 +136,7 @@ async def to_stage(photos: list,
     caption = f'''
 {new_captions}{photos[0][-1]}
 <code>{category} • {brand}\n{seasons}  {name}</code>
-<code>{"ціна: "}</code><b>{price} $   {round(price * usd_rate)} UAH</b>
+<code>{"ціна: "}</code><b>{round(price * usd_rate)} гривень - {price}💲</b>
 <code>{"розм. " if len(size) != 0 else ""}</code><b>{"  ".join(size)}</b>'''
 
     # print(caption, end='\n')
