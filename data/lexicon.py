@@ -31,8 +31,8 @@ btn = {
     'close': '✖️ закрити бота',
     '<': 'ᐊ',
     '>': 'ᐅ',
-    'close_filters': '—',
-    'filters': '+',
+    'close_filters': '▢',
+    'filters': '▤',
     '+': '+',
     '-': '-'
 }

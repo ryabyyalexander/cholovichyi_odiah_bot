@@ -147,10 +147,12 @@ async def to_stage(photos: list,
     if current_kb:
         kb = callback.message.reply_markup
     else:
+        has_multiple_photos = len(product_photos) > 1  # Проверяем количество фото товара
         kb = ikb(is_starred, favorites_are,
                  album_on=album_on, more_info=more_info,
                  filters=filters, kb_size=kb_size, size_list=size,
-                 user_id=user_id, link=link)
+                 user_id=user_id, link=link,
+                 has_multiple_photos=has_multiple_photos)  # Передаем новый параметр
 
     type_media = photos[0][1]
 
