@@ -79,7 +79,7 @@ class BotDatabase:
         return None  # на случай, если продукт с таким ID не найден
 
     def get_category_product(self, category):
-        cursor = self.execute_query("SELECT * FROM products WHERE category=?", (category,))
+        cursor = self.execute_query("SELECT * FROM products WHERE category=? AND sw='1'", (category,))
         result = cursor.fetchall()
         return result
 

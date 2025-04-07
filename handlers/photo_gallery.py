@@ -68,7 +68,7 @@ async def process_sl(callback: CallbackQuery, state: FSMContext):
     photos = [photo for photo in photos if data_product.photo_is_product(photo[0])]
 
     # выполняем функцию "НА СЦЕНУ"
-    await to_stage(photos, callback, state, shaffle=True, more_info=True, filters=True)
+    await to_stage(photos, callback, state, shaffle=True, more_info=True, filters=False)
 
     if callback.data == '➔      новинки':
         await callback.message.delete()

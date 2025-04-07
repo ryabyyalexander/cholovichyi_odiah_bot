@@ -18,11 +18,11 @@ def ikb(is_starred: bool = False,
         size_list = []
     kb_builder = InlineKeyboardBuilder()
 
-    star = btn[f'star_{"fl" if is_starred else "cl"}']
-    favorite_button = btn['album'] if album_on else btn['favorite_off']
+    # star = btn[f'star_{"fl" if is_starred else "cl"}']
+    # favorite_button = btn['album'] if album_on else btn['favorite_off']
     btn_filters = btn['filters'] if not filters else btn['close_filters']
-    buttons = [btn['<'], star, btn['>']]
-    favorites_are and buttons.insert(1, favorite_button)
+    buttons = [btn['<'], btn['>']]
+    # favorites_are and buttons.insert(1, favorite_button)
 
     # Добавляем кнопку "Подробнее" с ссылкой
     if link:

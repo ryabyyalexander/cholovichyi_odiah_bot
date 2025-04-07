@@ -130,25 +130,96 @@ async def process_start_command(message: Message, state: FSMContext):
 
 
 @router.message(F.text.lower().in_(['==']))
-async def process_total_command(message: Message):
+async def process_total_command(message: Message, state: FSMContext):
     await message.delete()
     formatted_date = data_time()
-    results = data_product.get_total_products()[1:]
+    all_results = data_product.get_total_products()[1:]  # Получаем все товары (без заголовка)
 
-    # Формируем строку для вывода
+    # Разбиваем на страницы по 50 товаров
+    page_size = 50
+    pages = [all_results[i:i + page_size] for i in range(0, len(all_results), page_size)]
+    total_pages = len(pages)
+
+    # Сохраняем данные в state для навигации
+    await state.update_data(
+        current_page=0,
+        total_pages=total_pages,
+        pages=pages,
+        formatted_date=formatted_date
+    )
+
+    # Отправляем первую страницу
+    await show_products_page(message, state)
+
+
+async def show_products_page(message: Message, state: FSMContext):
+    data = await state.get_data()
+    current_page = data['current_page']
+    total_pages = data['total_pages']
+    pages = data['pages']
+    formatted_date = data['formatted_date']
+
+    # Формируем сообщение для текущей страницы
     output = []
-    for row in results:
+    for row in pages[current_page]:
         if row[0] == 'ИТОГО':
-            # Добавляем общее количество товаров после "ИТОГО"
-            output.append(f"{row[0]}\t\t\t{row[4]}\nКоличество единиц: {row[2]}\n{formatted_date}")
+            # Итоги добавляем только на последней странице
+            if current_page == total_pages - 1:
+                output.append(f"{row[0]}\t\t\t{row[4]}\nКоличество единиц: {row[2]}\n{formatted_date}")
         else:
-            # Убираем строку с "www" из названия товара
-            name = row[1].split('\n')[0]  # Берем только первую строку (название товара)
-            # Добавляем категорию перед именем товара
+            name = row[1].split('\n')[0]  # Берем только название товара
             output.append(f"{row[0]} - {name}\t - {row[2]}\t * {row[3]}\t = {row[4]}")
 
-    # Отправляем сообщение с результатами
-    await message.answer("\n".join(output), reply_markup=simple_ikb(1, '✖️ закрити'))
+    # Добавляем номер страницы (если страниц несколько)
+    if total_pages > 1:
+        output.append(f"\nСтраница {current_page + 1}/{total_pages}")
+
+    # Создаем клавиатуру
+    keyboard = []
+    if total_pages > 1:
+        if current_page > 0:
+            keyboard.append(InlineKeyboardButton(text="Назад", callback_data="prev_page"))
+        if current_page < total_pages - 1:
+            keyboard.append(InlineKeyboardButton(text="Вперед", callback_data="next_page"))
+
+    keyboard.append(InlineKeyboardButton(text="✖️ Закрыть", callback_data="close_pages"))
+    reply_markup = InlineKeyboardMarkup(inline_keyboard=[keyboard])
+
+    # Отправляем или редактируем сообщение
+    if 'message_id' in data:
+        try:
+            await bot.edit_message_text(
+                chat_id=message.chat.id,
+                message_id=data['message_id'],
+                text="\n".join(output),
+                reply_markup=reply_markup
+            )
+            return
+        except TelegramBadRequest:
+            pass
+
+    msg = await message.answer("\n".join(output), reply_markup=reply_markup)
+    await state.update_data(message_id=msg.message_id)
+
+
+@router.callback_query(F.data.in_(["prev_page", "next_page", "close_pages"]))
+async def handle_page_navigation(callback: CallbackQuery, state: FSMContext):
+    data = await state.get_data()
+
+    if callback.data == "close_pages":
+        await callback.message.delete()
+        await state.clear()
+        return
+
+    current_page = data['current_page']
+
+    if callback.data == "prev_page" and current_page > 0:
+        await state.update_data(current_page=current_page - 1)
+    elif callback.data == "next_page" and current_page < data['total_pages'] - 1:
+        await state.update_data(current_page=current_page + 1)
+
+    await show_products_page(callback.message, state)
+    await callback.answer()
 
 
 @router.callback_query(F.data.in_(['✖️ закрити']))
